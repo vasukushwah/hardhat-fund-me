@@ -6,7 +6,7 @@
 const { network } = require("hardhat")
 const {
     networkConfig,
-    developementChains,
+    developementChains
 } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
 
@@ -33,7 +33,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         from: deployer,
         args: args,
         log: true,
-        waitConfirmations: network.config.blockConfirmations || 1,
+        waitConfirmations: network.config.blockConfirmations || 1
     })
 
     if (

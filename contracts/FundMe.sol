@@ -28,10 +28,10 @@ contract FundMe {
     using PriceConverter for uint256;
 
     uint256 public constant MINIMUM_USD = 50 * 1e18; // 1e18 == 1 * 10 ** 18 == 1000000000000000000
-    address[] public s_funders;
-    mapping(address => uint256) public s_addressToFundedAmount;
-    address public immutable i_owner;
-    AggregatorV3Interface public s_priceFeed;
+    address[] private s_funders;
+    mapping(address => uint256) private s_addressToFundedAmount;
+    address private immutable i_owner;
+    AggregatorV3Interface private s_priceFeed;
 
     modifier onlyOwner() {
         // require(msg.sender == i_owner, "Sender is not owner!");
@@ -62,11 +62,11 @@ contract FundMe {
         }
         s_funders = new address[](0);
 
-        (bool isSuccess, ) = payable(msg.sender).call{
+        (bool success, ) = payable(msg.sender).call{
             value: address(this).balance
         }("");
 
-        require(isSuccess, "Call failed");
+        require(success);
     }
 
     function chiperWithdraw() public onlyOwner {
@@ -76,10 +76,30 @@ contract FundMe {
         }
         s_funders = new address[](0);
 
-        (bool isSuccess, ) = payable(msg.sender).call{
+        (bool success, ) = payable(msg.sender).call{
             value: address(this).balance
         }("");
 
-        require(isSuccess, "Call failed");
+        require(success);
+    }
+
+    function getOwner() public view returns (address) {
+        return i_owner;
+    }
+
+    function getFunder(uint256 funderIndex) public view returns (address) {
+        return s_funders[funderIndex];
+    }
+
+    function getAddressTOAmountFunded(address funderAddress)
+        public
+        view
+        returns (uint256)
+    {
+        return s_addressToFundedAmount[funderAddress];
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }
